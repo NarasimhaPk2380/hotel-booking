@@ -1,0 +1,174 @@
+<div class="tabs" fxLayout="row wrap">
+    <div role="tablist" aria-label="options" (keyup)="handleKeyUp($event)"
+        fxLayout="row" fxFlex="auto">
+        <bookings-tab-trigger triggerId="trigger-a" panelId="panel-a" [isActive]="activated === 0"
+            (click)="activatePanel(0)" fxFlex="auto" [isPanelDisabled]="false">
+           Your Stay
+        </bookings-tab-trigger>
+        <bookings-tab-trigger triggerId="trigger-b" panelId="panel-b" [isActive]="activated === 1"
+            (click)="activatePanel(1)" fxFlex="auto" [isPanelDisabled]="roomBookingForm?.invalid || false">
+          Guests
+        </bookings-tab-trigger>
+        <bookings-tab-trigger triggerId="trigger-c" panelId="panel-c" [isActive]="activated === 2"
+            (click)="activatePanel(2)" fxFlex="auto" [isPanelDisabled]="!bookingJson?.guests?.length">
+            Payment
+        </bookings-tab-trigger>
+    </div>
+
+    <bookings-tab-panel *ngIf="activated === 0" panelId="panel-a" triggerId="trigger-a" fxFlex="100%">
+        <form [formGroup]="roomBookingForm" fxLayout="row wrap" fxFlex="100%">
+            <div class="form-control" fxFlex="50%">
+                <label for="checkin">Check In</label>
+                <input type="date" name="checkin" placeholder="Check In" formControlName="checkin" id="checkin" />
+                <ng-container *ngIf="roomBookingForm?.controls?.checkin?.touched">
+                    <span class="control-error" *ngIf="roomBookingForm?.controls?.checkin?.errors?.required">Check in is
+                        required</span>
+                </ng-container>
+            </div>
+            <div class="form-control" fxFlex="50%">
+                <label for="checkout">Check Out</label>
+                <input type="date" name="checkout" placeholder="Check Out" formControlName="checkout" id="checkout" />
+                <ng-container *ngIf="roomBookingForm?.controls?.checkout?.touched">
+                    <span class="control-error" *ngIf="roomBookingForm?.controls?.checkout?.errors?.required">Checkout
+                        in is
+                        required</span>
+                        <span class="control-error" *ngIf="roomBookingForm?.errors?.datesInvalid">Check out date must be greater than check in date</span>
+                </ng-container>
+            </div>
+            <div class="form-control" fxFlex="50%">
+                <label for="roomtype">Room type</label>
+                <select name="roomtype" id="roomtype" formControlName="roomType">
+                    <option value="">Select room type</option>
+                    <option value="Single">Single</option>
+                    <option value="Double">Double</option>
+                </select>
+                <ng-container *ngIf="roomBookingForm?.controls?.roomType?.touched">
+                    <span class="control-error" *ngIf="roomBookingForm?.controls?.roomType?.errors?.required">Room type
+                        is
+                        required</span>
+                </ng-container>
+            </div>
+            <div class="form-control" fxFlex="50%">
+                <label for="noofpersons">No of persons</label>
+                <input type="text" id="noofpersons" name="noofpersons" placeholder="Number of persons"
+                    formControlName="numOfPersons" (keypress)="onlyNumbers($event)" />
+                <ng-container *ngIf="roomBookingForm?.controls?.numOfPersons?.touched">
+                    <span class="control-error" *ngIf="roomBookingForm?.controls?.numOfPersons?.errors?.required">No of
+                        persons is
+                        required</span>
+                </ng-container>
+            </div>
+            <div class="form-control" fxFlex="100%">
+                <fieldset>
+                    <legend>Food service</legend>
+                    <div>
+                        <input id="breakfast" name="breakfast" type="checkbox" (click)="onInputChange($event)"
+                            value="breakfast" class="checkbox" [checked]="roomBookingForm.get('foodService')?.value.indexOf('breakfast') !== -1">
+                        <label for="breakfast">Breakfast</label>
+                        <input id="lunch" name="lunch" type="checkbox" value="lunch" class="checkbox" (change)="onInputChange($event)" [checked]="roomBookingForm.get('foodService')?.value.indexOf('lunch') !== -1">
+                        <label for="lunch">Lunch</label>
+                        <input id="dinner" name="dinner" type="checkbox" value="dinner" class="checkbox" (change)="onInputChange($event)" [checked]="roomBookingForm.get('foodService')?.value.indexOf('dinner') !== -1">
+                        <label for="dinner">Dinner</label>
+                    </div>
+                </fieldset>
+                <ng-container *ngIf="roomBookingForm?.controls?.foodService?.touched">
+                    <span class="control-error" *ngIf="roomBookingForm?.controls?.foodService?.errors?.required">Food
+                        service is
+                        required</span>
+                </ng-container>
+            </div>
+            <div class="form-control" fxFlex="100%">
+                <fieldset>
+                    <legend>Pickup</legend>
+                    <div>
+                        <input id="yes" name="pickup" type="radio" value="yes" formControlName="pickup">
+                        <label for="yes">Yes,sure</label>
+                        <input id="no" name="pickup" type="radio" value="no" formControlName="pickup">
+                        <label for="no">No, I already rented a car</label>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="form-actions" fxFlex="100%">
+                <button class="btn" (click)="onNextClick('stay')" [disabled]="roomBookingForm.invalid">Next</button>
+            </div>
+            <!-- <pre>{{roomBookingForm.value | json}}</pre> -->
+        </form>
+    </bookings-tab-panel>
+    <bookings-tab-panel *ngIf="activated === 1" panelId="panel-b" triggerId="trigger-b" fxFlex="100%">
+        <div fxLayout="row wrap" fxLayoutAlign="center">
+            <ng-container *ngIf="bookingJson?.guests?.length;else guests">
+                <div class="guests" fxFlex="80%" *ngFor="let guest of bookingJson?.guests">
+                    <p>{{guest.firstName}} {{guest.lastName}}</p>
+                    <p><span>Age: {{guest.age}}</span><span> | </span><span>Gender:{{guest.gender}}</span></p>
+                    <p><span>Address</span><span> {{guest.address}}</span></p>
+                </div>
+            </ng-container>
+            <ng-template #guests>
+                <div class="empty-data" fxFlex="80%">
+                    Add guests to proceed
+                </div>
+            </ng-template>
+            <ul fxFlex="100%" fxLayout="row" fxLayoutAlign="space-around" fxLayoutGap="16px grid">
+                <li><button class="btn" (click)="activatePanel(0)">Back</button></li>
+                <li><button  class="btn" (click)="dialog.openDialog()">Add Guest</button></li>
+                <li><button class="btn" (click)="activatePanel(2)" [disabled]="!bookingJson?.guests?.length">Next</button></li>
+            </ul>
+        </div>
+        <bookings-dialog #dialog (recieveDialogData)="recieveDialogData($event)"></bookings-dialog>
+    </bookings-tab-panel>
+    <bookings-tab-panel *ngIf="activated === 2" panelId="panel-c" triggerId="trigger-c" fxFlex="100%">
+        <form [formGroup]="paymentForm" fxLayout="row wrap" fxFlex="100%">
+            <div class="form-control" fxFlex="100%">
+                <fieldset>
+                    <legend>Choose payment</legend>
+                    <div>
+                        <input id="cc" name="cc" type="radio" value="cc">
+                        <label for="cc">Credit card</label>
+                        <input id="upi" name="upi" type="radio" value="upi">
+                        <label for="upi">UPI Payment</label>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="form-control" fxFlex="50%">
+                <label for="cardholdername">Card holder name</label>
+                <input type="text" name="cardholdername" placeholder="Card holder name" formControlName="cardholdername"
+                    id="cardholdername" />
+                <ng-container *ngIf="paymentForm?.controls?.cardholdername?.touched">
+                    <span class="control-error" *ngIf="paymentForm?.controls?.cardholdername?.errors?.required">Card holder name is
+                        required</span>
+                </ng-container>
+            </div>
+            <div class="form-control" fxFlex="50%">
+                <label for="cardNumber">Card number</label>
+                <input type="text" name="cardNumber" placeholder="Card number" formControlName="cardNumber"
+                    id="cardholdername" />
+                <ng-container *ngIf="paymentForm?.controls?.cardNumber?.touched">
+                    <span class="control-error" *ngIf="paymentForm?.controls?.cardNumber?.errors?.required">Cardnumber
+                        is
+                        required</span>
+                </ng-container>
+            </div>
+            <div class="form-control" fxFlex="50%">
+                <label for="expirationDate">Expiration date</label>
+                <input type="text" name="expirationDate" placeholder="Expiration date" formControlName="expirationDate"
+                    id="cardholdername" />
+                <ng-container *ngIf="paymentForm?.controls?.expirationDate?.touched">
+                    <span class="control-error" *ngIf="paymentForm?.controls?.expirationDate?.errors?.required">Expiry date
+                         is
+                        required</span>
+                </ng-container>
+            </div>
+            <div class="form-control" fxFlex="50%">
+                <label for="cvv">CVV</label>
+                <input type="text" name="cvv" placeholder="Cvv" formControlName="cvv" id="cvv" />
+                <ng-container *ngIf="paymentForm?.controls?.cvv?.touched">
+                    <span class="control-error" *ngIf="paymentForm?.controls?.cvv?.errors?.required">Cvv is
+                        required</span>
+                </ng-container>
+            </div>
+            <div class="form-actions" fxFlex="100%">
+                <button class="btn" (click)="onNextClick('stay')">Next</button>
+            </div>
+        </form>
+    </bookings-tab-panel>
+</div>

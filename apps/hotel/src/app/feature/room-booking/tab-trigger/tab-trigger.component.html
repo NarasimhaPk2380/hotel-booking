@@ -1,0 +1,11 @@
+<button
+[id]="triggerId"
+role="tab"
+[attr.aria-controls]="panelId"
+[attr.aria-selected]="isActive"
+tabindex="-1"
+[disabled]="isPanelDisabled"
+class="button"
+>
+<ng-content></ng-content>
+</button>

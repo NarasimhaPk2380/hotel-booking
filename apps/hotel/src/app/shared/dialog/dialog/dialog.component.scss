@@ -1,0 +1,74 @@
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  padding-top: 100px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  .modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 0px 20px 20px 20px;
+    border: 1px solid #888;
+    width: 80%;
+    .guest-title {
+      padding: 10px;
+      p {
+        line-height: 0px;
+        font-weight: bold;
+        font-size: 20px;
+      }
+    }
+  }
+  .close {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    &:hover,
+    &:focus {
+      color: #000;
+      text-decoration: none;
+      cursor: pointer;
+    }
+  }
+}
+
+.form-actions {
+  text-align: end;
+}
+.form-control {
+  input[type='text'],
+  input[type='date'],
+  textarea,
+  select {
+    width: 100%;
+    padding: 5px;
+  }
+  label {
+    &:first-child {
+      display: block;
+      margin-bottom: 5px;
+    }
+  }
+  padding: 10px;
+  .control-error {
+    color: #ab0303;
+  }
+}
+
+.btn {
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  background: #dc143c;
+  color: #fff;
+  &:disabled {
+    background: lightgrey;
+  }
+}

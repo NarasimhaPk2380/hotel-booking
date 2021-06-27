@@ -1,0 +1,82 @@
+<div id="myModal" class="modal" #modal role="dialog" aria-labelledby="myModal">
+    <div class="modal-content" fxLayout="column">
+        <div class="guest-title" fxLayout="row" fxLayoutAlign="space-between center">
+            <p>Add guest</p>
+            <button (click)="closeDialog()">x</button>
+        </div>
+        <form [formGroup]="addGuestForm" fxLayout="row wrap" fxFlex="100%">
+            <div class="form-control" fxFlex="50%">
+                <label for="firstname">Firstname</label>
+                <input type="text" name="firstname" placeholder="Firstname" formControlName="firstName" id="firstname" />
+                <ng-container *ngIf="addGuestForm?.controls?.firstName?.touched">
+                    <span class="control-error" *ngIf="addGuestForm?.controls?.firstName?.errors?.required">Firstname is
+                        required</span>
+                </ng-container>
+            </div>
+            <div class="form-control" fxFlex="50%">
+                <label for="lastname">Lastname</label>
+                <input type="text" name="lastname" placeholder="Lastname" formControlName="lastName" id="lastname"/>
+                <ng-container *ngIf="addGuestForm?.controls?.lastName?.touched">
+                    <span class="control-error" *ngIf="addGuestForm?.controls?.lastName?.errors?.required">Lastname is
+                        required</span>
+                </ng-container>
+            </div>
+            <div class="form-control" fxFlex="100%">.
+                <fieldset>
+                    <legend>Gender</legend>
+                    <div>
+                        <input id="male" name="gender" type="radio" value="male" formControlName="gender">
+                        <label for="male">Male</label>
+                        <input id="female" name="gender" type="radio" value="female" formControlName="gender">
+                        <label for="female">Female</label><br/>
+                        <ng-container *ngIf="addGuestForm?.controls?.gender?.touched">
+                            <span class="control-error" *ngIf="addGuestForm?.controls?.gender?.errors?.required">Gender is
+                                required</span>
+                        </ng-container>
+                    </div>
+                </fieldset>
+               
+            </div>
+            <div class="form-control" fxFlex="50%">
+                <label for="phone">Phone</label>
+                <input type="text" name="phone" placeholder="Phone" formControlName="phone" id="phone" (keypress)="onlyNumbers($event)"/>
+                <ng-container *ngIf="addGuestForm?.controls?.phone?.touched">
+                    <span class="control-error" *ngIf="addGuestForm?.controls?.phone?.errors?.required">Phone number is
+                        required</span>
+                    <span class="control-error" *ngIf="addGuestForm?.controls?.phone?.errors?.minlength">Phone number must have atleast 10 digits
+                    </span>
+                </ng-container>
+            </div>
+            <div class="form-control" fxFlex="50%">
+                <label for="email">Email</label>
+                <input type="text" name="email" placeholder="Email" formControlName="email" id="email"/>
+                <ng-container *ngIf="addGuestForm?.controls?.email?.touched">
+                    <span class="control-error" *ngIf="addGuestForm?.controls?.email?.errors?.required">Email is
+                        required</span>
+                        <span class="control-error" *ngIf="addGuestForm?.controls?.email?.errors?.email">Email is invalid
+                        </span>
+                </ng-container>
+            </div>
+            <div class="form-control" fxFlex="50%">
+                <label for="address">Address</label>
+                <textarea name="address" placeholder="Address" formControlName="address"  id="address"></textarea>
+                <ng-container *ngIf="addGuestForm?.controls?.address?.touched">
+                    <span class="control-error" *ngIf="addGuestForm?.controls?.address?.errors?.required">Address is
+                        required</span>
+                </ng-container>
+            </div>
+            <div class="form-control" fxFlex="50%">
+                <label for="age">Age</label>
+                <input type="text" name="age" placeholder="Age" formControlName="age"  id="age" (keypress)="onlyNumbers($event)" />
+                <ng-container *ngIf="addGuestForm?.controls?.age?.touched">
+                    <span class="control-error" *ngIf="addGuestForm?.controls?.age?.errors?.required">Age is
+                        required</span>
+                </ng-container>
+            </div>
+            <div class="form-actions" fxFlex="100%">
+                <button class="btn" (click)="submitGuestData()" [disabled]="addGuestForm.invalid">Submit</button>
+                <button class="btn">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
