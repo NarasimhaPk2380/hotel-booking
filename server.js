@@ -3,7 +3,7 @@ const path = require('path');
 const app = express();
 
 async function startServer() {
-    const port = process.env.port || 3333;
+    const port = process.env.PORT || 3333;
     const CLIENT_BUILD_PATH = path.join(__dirname, './dist/apps/hotel');
 
     app.use(express.static(CLIENT_BUILD_PATH));
