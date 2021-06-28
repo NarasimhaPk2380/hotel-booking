@@ -16,7 +16,7 @@
     </div>
 
     <bookings-tab-panel *ngIf="activated === 0" panelId="panel-a" triggerId="trigger-a" fxFlex="100%">
-        <form [formGroup]="roomBookingForm" fxLayout="row wrap" fxFlex="100%">
+        <form [formGroup]="roomBookingForm" fxLayout="row wrap" fxFlex="100%" novalidate>
             <div class="form-control" fxFlex="50%">
                 <label for="checkin">Check In</label>
                 <input type="date" name="checkin" placeholder="Check In" formControlName="checkin" id="checkin" />
@@ -62,7 +62,7 @@
                 <fieldset>
                     <legend>Food service</legend>
                     <div>
-                        <input id="breakfast" name="breakfast" type="checkbox" (click)="onInputChange($event)"
+                        <input id="breakfast" name="breakfast" type="checkbox" (change)="onInputChange($event)"
                             value="breakfast" class="checkbox" [checked]="roomBookingForm.get('foodService')?.value.indexOf('breakfast') !== -1">
                         <label for="breakfast">Breakfast</label>
                         <input id="lunch" name="lunch" type="checkbox" value="lunch" class="checkbox" (change)="onInputChange($event)" [checked]="roomBookingForm.get('foodService')?.value.indexOf('lunch') !== -1">
@@ -87,6 +87,11 @@
                         <label for="no">No, I already rented a car</label>
                     </div>
                 </fieldset>
+                <ng-container *ngIf="roomBookingForm?.controls?.pickup?.touched">
+                    <span class="control-error" *ngIf="roomBookingForm?.controls?.pickup?.errors?.required">Pick
+                         is
+                        required</span>
+                </ng-container>
             </div>
             <div class="form-actions" fxFlex="100%">
                 <button class="btn" (click)="onNextClick('stay')" [disabled]="roomBookingForm.invalid">Next</button>

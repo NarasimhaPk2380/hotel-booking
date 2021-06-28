@@ -7,6 +7,7 @@ import {
   ViewChildren,
 } from '@angular/core';
 import {
+  FormArray,
   FormBuilder,
   FormControl,
   FormGroup,
