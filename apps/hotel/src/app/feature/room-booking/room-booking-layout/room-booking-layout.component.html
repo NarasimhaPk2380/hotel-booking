@@ -19,9 +19,11 @@
         <form [formGroup]="roomBookingForm" fxLayout="row wrap" fxFlex="100%" novalidate>
             <div class="form-control" fxFlex="50%">
                 <label for="checkin">Check In</label>
-                <input type="date" name="checkin" placeholder="Check In" formControlName="checkin" id="checkin" />
+                <input type="date" name="checkin" placeholder="Check In" formControlName="checkin" id="checkin"/>
                 <ng-container *ngIf="roomBookingForm?.controls?.checkin?.touched">
-                    <span class="control-error" *ngIf="roomBookingForm?.controls?.checkin?.errors?.required">Check in is
+                    <span class="control-error" role="alert" aria-describedby="checkin"
+                    tabindex="0" *ngIf="roomBookingForm?.controls?.checkin?.invalid"
+                     >Check in is
                         required</span>
                 </ng-container>
             </div>
@@ -29,10 +31,12 @@
                 <label for="checkout">Check Out</label>
                 <input type="date" name="checkout" placeholder="Check Out" formControlName="checkout" id="checkout" />
                 <ng-container *ngIf="roomBookingForm?.controls?.checkout?.touched">
-                    <span class="control-error" *ngIf="roomBookingForm?.controls?.checkout?.errors?.required">Checkout
-                        in is
+                    <span class="control-error" role="alert" aria-describedby="checkout"
+                    tabindex="0" *ngIf="roomBookingForm?.controls?.checkout?.errors?.required">Checkout
+                         is
                         required</span>
-                        <span class="control-error" *ngIf="roomBookingForm?.errors?.datesInvalid">Check out date must be greater than check in date</span>
+                        <span class="control-error" role="alert" aria-describedby="checkout"
+                        tabindex="0"  *ngIf="roomBookingForm?.errors?.datesInvalid">Check out date must be greater than check in date</span>
                 </ng-container>
             </div>
             <div class="form-control" fxFlex="50%">
@@ -43,17 +47,19 @@
                     <option value="Double">Double</option>
                 </select>
                 <ng-container *ngIf="roomBookingForm?.controls?.roomType?.touched">
-                    <span class="control-error" *ngIf="roomBookingForm?.controls?.roomType?.errors?.required">Room type
+                    <span class="control-error" role="alert" aria-describedby="roomtype"
+                    tabindex="0" *ngIf="roomBookingForm?.controls?.roomType?.errors?.required">Room type
                         is
                         required</span>
                 </ng-container>
             </div>
             <div class="form-control" fxFlex="50%">
-                <label for="noofpersons">No of persons</label>
+                <label for="noofpersons">Number of persons</label>
                 <input type="text" id="noofpersons" name="noofpersons" placeholder="Number of persons"
                     formControlName="numOfPersons" (keypress)="onlyNumbers($event)" />
                 <ng-container *ngIf="roomBookingForm?.controls?.numOfPersons?.touched">
-                    <span class="control-error" *ngIf="roomBookingForm?.controls?.numOfPersons?.errors?.required">No of
+                    <span class="control-error"  role="alert" aria-describedby="noofpersons"
+                    tabindex="0" *ngIf="roomBookingForm?.controls?.numOfPersons?.errors?.required">No of
                         persons is
                         required</span>
                 </ng-container>
@@ -88,7 +94,8 @@
                     </div>
                 </fieldset>
                 <ng-container *ngIf="roomBookingForm?.controls?.pickup?.touched">
-                    <span class="control-error" *ngIf="roomBookingForm?.controls?.pickup?.errors?.required">Pick
+                    <span class="control-error"  role="alert" aria-describedby="yes"
+                    tabindex="0" *ngIf="roomBookingForm?.controls?.pickup?.errors?.required">Pickup
                          is
                         required</span>
                 </ng-container>
@@ -119,7 +126,7 @@
                 <li><button class="btn" (click)="activatePanel(2)" [disabled]="!bookingJson?.guests?.length">Next</button></li>
             </ul>
         </div>
-        <bookings-dialog #dialog (recieveDialogData)="recieveDialogData($event)"></bookings-dialog>
+        <bookings-dialog #dialog (recieveDialogData)="recieveDialogData($event)" isGuest="true"></bookings-dialog>
     </bookings-tab-panel>
     <bookings-tab-panel *ngIf="activated === 2" panelId="panel-c" triggerId="trigger-c" fxFlex="100%">
         <form [formGroup]="paymentForm" fxLayout="row wrap" fxFlex="100%">
@@ -127,53 +134,86 @@
                 <fieldset>
                     <legend>Choose payment</legend>
                     <div>
-                        <input id="cc" name="cc" type="radio" value="cc">
+                        <input id="cc" name="paymentType" type="radio" value="cc" formControlName="paymentType" (change)="onPaymentChange($event)">
                         <label for="cc">Credit card</label>
-                        <input id="upi" name="upi" type="radio" value="upi">
+                        <input id="upi" name="paymentType" type="radio" value="upi" formControlName="paymentType" (change)="onPaymentChange($event)">
                         <label for="upi">UPI Payment</label>
                     </div>
                 </fieldset>
             </div>
+        <ng-container *ngIf="paymentForm?.controls?.paymentType?.value === 'cc'">
             <div class="form-control" fxFlex="50%">
                 <label for="cardholdername">Card holder name</label>
                 <input type="text" name="cardholdername" placeholder="Card holder name" formControlName="cardholdername"
                     id="cardholdername" />
                 <ng-container *ngIf="paymentForm?.controls?.cardholdername?.touched">
-                    <span class="control-error" *ngIf="paymentForm?.controls?.cardholdername?.errors?.required">Card holder name is
+                    <span class="control-error" role="alert" aria-describedby="cardholdername"
+                    tabindex="0" *ngIf="paymentForm?.controls?.cardholdername?.errors?.required">Card holder name is
                         required</span>
                 </ng-container>
             </div>
             <div class="form-control" fxFlex="50%">
                 <label for="cardNumber">Card number</label>
-                <input type="text" name="cardNumber" placeholder="Card number" formControlName="cardNumber"
-                    id="cardholdername" />
+                <input type="text" name="cardNumber" placeholder="0000-0000-0000-0000" formControlName="cardNumber" (keypress)="onlyNumbers($event)" 
+                    id="cardNumber" />
                 <ng-container *ngIf="paymentForm?.controls?.cardNumber?.touched">
-                    <span class="control-error" *ngIf="paymentForm?.controls?.cardNumber?.errors?.required">Cardnumber
+                    <span class="control-error" role="alert" aria-describedby="cardNumber"
+                    tabindex="0" *ngIf="paymentForm?.controls?.cardNumber?.errors?.required">Cardnumber
                         is
                         required</span>
+                        <span class="control-error" role="alert" aria-describedby="cardNumber"
+                        tabindex="0" *ngIf="paymentForm?.controls?.cardNumber?.errors?.minlength || paymentForm?.controls?.cardNumber?.errors?.maxlength">Cardnumber
+                            must have 16 digits</span>
                 </ng-container>
             </div>
             <div class="form-control" fxFlex="50%">
                 <label for="expirationDate">Expiration date</label>
-                <input type="text" name="expirationDate" placeholder="Expiration date" formControlName="expirationDate"
-                    id="cardholdername" />
+                <input type="text" name="expirationDate" placeholder="MM/YY" formControlName="expirationDate"
+                    id="expirationDate" />
                 <ng-container *ngIf="paymentForm?.controls?.expirationDate?.touched">
-                    <span class="control-error" *ngIf="paymentForm?.controls?.expirationDate?.errors?.required">Expiry date
+                    <span class="control-error" role="alert" aria-describedby="expirationDate"
+                    tabindex="0" *ngIf="paymentForm?.controls?.expirationDate?.errors?.required">Expiry date
                          is
                         required</span>
+                        <span class="control-error" role="alert" aria-describedby="expirationDate"
+                        tabindex="0" *ngIf="paymentForm?.controls?.expirationDate?.errors?.pattern">Expiry date
+                            is
+                           invalid</span>
                 </ng-container>
             </div>
             <div class="form-control" fxFlex="50%">
                 <label for="cvv">CVV</label>
-                <input type="text" name="cvv" placeholder="Cvv" formControlName="cvv" id="cvv" />
+                <input type="text" name="cvv" placeholder="000" formControlName="cvv" id="cvv" (keypress)="onlyNumbers($event)" />
                 <ng-container *ngIf="paymentForm?.controls?.cvv?.touched">
-                    <span class="control-error" *ngIf="paymentForm?.controls?.cvv?.errors?.required">Cvv is
+                    <span class="control-error" role="alert" aria-describedby="cvv"
+                    tabindex="0" *ngIf="paymentForm?.controls?.cvv?.errors?.required">Cvv is
                         required</span>
+                        <span class="control-error" role="alert" aria-describedby="cvv"
+                        tabindex="0" *ngIf="paymentForm?.controls?.cvv?.errors?.minlength || paymentForm?.controls?.cvv?.errors?.maxlength">Cvv
+                            must have 3 digits</span>
                 </ng-container>
             </div>
-            <div class="form-actions" fxFlex="100%">
-                <button class="btn" (click)="onNextClick('stay')">Next</button>
+        </ng-container>
+            <ng-container *ngIf="paymentForm?.controls?.paymentType?.value === 'upi'">
+                <div class="form-control" fxFlex="50%">
+                    <label for="upiNumber">Enter UPI number</label>
+                    <input type="text" name="upiNumber" placeholder="898989@bank.io" formControlName="upiNumber"
+                        id="upiNumber" />
+                    <ng-container *ngIf="paymentForm?.controls?.upiNumber?.touched">
+                        <span class="control-error" role="alert" aria-describedby="cvv"
+                        tabindex="0" *ngIf="paymentForm?.controls?.upiNumber?.errors?.required">UPI Number is
+                            required</span>
+                            <span class="control-error" role="alert" aria-describedby="cvv"
+                            tabindex="0" *ngIf="paymentForm?.controls?.upiNumber?.errors?.email">UPI Number is
+                                invalid</span>
+                    </ng-container>
+                </div>
+            </ng-container>
+            <div class="form-actions" fxFlex="100%" fxLayout="row" fxLayoutAlign="space-between">
+                <button class="btn" (click)="activatePanel(1)">Back</button>
+                <button class="btn" (click)="paymentProceed()" [disabled]="paymentForm.invalid">Proceed</button>
             </div>
         </form>
+        <bookings-dialog #dialog (recieveDialogData)="recieveDialogData($event)" isGuest="false"></bookings-dialog>
     </bookings-tab-panel>
 </div>

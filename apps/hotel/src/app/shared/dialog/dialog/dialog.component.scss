@@ -41,6 +41,9 @@
 
 .form-actions {
   text-align: end;
+  &:first-child {
+    margin-right: 5px;
+  }
 }
 .form-control {
   input[type='text'],

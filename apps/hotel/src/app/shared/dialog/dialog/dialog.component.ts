@@ -2,6 +2,7 @@ import {
   Component,
   ElementRef,
   EventEmitter,
+  Input,
   OnInit,
   Output,
   Renderer2,
@@ -13,6 +14,8 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
+import { Router } from '@angular/router';
+import { Hotel } from '../../models/hotel.model';
 import { allowNumbersOnly } from '../../utils/common-functions';
 
 @Component({
@@ -24,10 +27,17 @@ export class DialogComponent implements OnInit {
   @ViewChild('modal')
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   modal!: ElementRef<any>;
+  @Input() isGuest = 'true';
+  hotelJson!: Hotel;
   @Output() recieveDialogData = new EventEmitter();
   addGuestForm: FormGroup = new FormGroup({});
+  confirmValue = false;
 
-  constructor(private fb: FormBuilder, private renderer: Renderer2) {}
+  constructor(
+    private fb: FormBuilder,
+    private renderer: Renderer2,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.addGuestForm = this.fb.group({
@@ -44,12 +54,14 @@ export class DialogComponent implements OnInit {
     });
   }
 
-  openDialog() {
+  openDialog(data = {}) {
     this.modal.nativeElement.style.display = 'block';
     const firstName = this.modal.nativeElement.querySelector('#firstname');
-
-    firstName.focus();
+    const confirmCheckbox = this.modal.nativeElement.querySelector('#confirm');
+    firstName?.focus();
+    confirmCheckbox?.focus();
     this.trapFocus(this.modal.nativeElement);
+    this.hotelJson = { ...data } as Hotel;
   }
   closeDialog() {
     this.modal.nativeElement.style.display = 'none';
@@ -73,7 +85,14 @@ export class DialogComponent implements OnInit {
   onlyNumbers(e: KeyboardEvent) {
     allowNumbersOnly(e);
   }
-
+  goToMyBookings() {
+    localStorage.setItem('hotelJson', JSON.stringify(this.hotelJson));
+    this.router.navigate(['/my-bookings']);
+    const mybookings: HTMLElement = <HTMLElement>(
+      document?.body?.querySelector('#my-bookings')
+    );
+    mybookings.focus();
+  }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   trapFocus(element: any) {
     const focusableEls = element.querySelectorAll(

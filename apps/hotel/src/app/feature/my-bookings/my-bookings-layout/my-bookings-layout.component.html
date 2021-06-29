@@ -1,1 +1,16 @@
-<p>my-bookings-layout works!</p>
+<div fxLayout="row" fxLayoutAlign="center center" class="my-bookings">
+    <ng-container *ngIf="bookingJson.checkin;else guests">
+        <div class="guests" fxFlex="80%">
+            <p *ngIf="bookingJson.guests.length">{{bookingJson.guests.length}} guests</p>
+            <p>{{bookingJson.guests[0]?.firstName}} {{bookingJson.guests[0]?.lastName}}</p>
+            <p><span>Room: {{bookingJson?.roomType}}</span></p>
+            <p><span>CheckIn</span><span> {{bookingJson?.checkin}}</span></p>
+            <p><span>CheckOut</span><span> {{bookingJson?.checkout}}</span></p>
+        </div>
+    </ng-container>
+    <ng-template #guests>
+        <div class="empty-data" fxFlex="80%">
+           Currently no bookings
+        </div>
+    </ng-template>
+</div>

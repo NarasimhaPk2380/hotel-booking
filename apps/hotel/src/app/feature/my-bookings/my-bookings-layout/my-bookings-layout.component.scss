@@ -1,0 +1,28 @@
+.my-bookings {
+  padding: 20px;
+  .empty-data {
+    padding: 30px;
+    text-align: center;
+    border: dotted;
+    margin-bottom: 10px;
+  }
+  .guests {
+    border: 1px solid;
+    padding: 10px;
+    box-shadow: 5px 5px #888888;
+    margin-bottom: 20px;
+    p {
+      margin: 2px;
+      &:first-child,
+      &:nth-child(2) {
+        font-weight: bold;
+      }
+      &:first-child {
+        float: right;
+      }
+      &:not(:first-child) {
+        color: #371e74;
+      }
+    }
+  }
+}

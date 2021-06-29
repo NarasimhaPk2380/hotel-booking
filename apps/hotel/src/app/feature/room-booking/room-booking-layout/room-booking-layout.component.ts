@@ -4,15 +4,16 @@ import {
   ElementRef,
   OnInit,
   QueryList,
+  ViewChild,
   ViewChildren,
 } from '@angular/core';
 import {
-  FormArray,
   FormBuilder,
   FormControl,
   FormGroup,
   Validators,
 } from '@angular/forms';
+import { DialogComponent } from '../../../shared/dialog/dialog/dialog.component';
 import { Guest, Hotel } from '../../../shared/models/hotel.model';
 import { allowNumbersOnly } from '../../../shared/utils/common-functions';
 import { TabTriggerComponent } from '../tab-trigger/tab-trigger.component';
@@ -29,6 +30,8 @@ export class RoomBookingLayoutComponent implements OnInit, AfterViewInit {
     ...this.roomBookingForm.value,
     guests: [],
   };
+  @ViewChild('dialog')
+  dialog!: DialogComponent;
   @ViewChildren(TabTriggerComponent, { read: ElementRef })
   tabElements!: QueryList<ElementRef>;
   tabs!: ElementRef[];
@@ -52,11 +55,23 @@ export class RoomBookingLayoutComponent implements OnInit, AfterViewInit {
       }
     );
     this.paymentForm = this.fb.group({
-      paymentType: new FormControl('', [Validators.required]),
+      paymentType: new FormControl('cc', [Validators.required]),
       cardholdername: new FormControl('', [Validators.required]),
-      cardNumber: new FormControl('', [Validators.required]),
-      expirationDate: new FormControl('', [Validators.required]),
-      cvv: new FormControl('', [Validators.required]),
+      cardNumber: new FormControl('', [
+        Validators.required,
+        Validators.minLength(16),
+        Validators.maxLength(16),
+      ]),
+      expirationDate: new FormControl('', [
+        Validators.required,
+        Validators.pattern(new RegExp('^(0[1-9]|1[0-2])/?([0-9]{2})$')),
+      ]),
+      cvv: new FormControl('', [
+        Validators.required,
+        Validators.minLength(3),
+        Validators.maxLength(3),
+      ]),
+      upiNumber: new FormControl('', []),
     });
   }
 
@@ -127,6 +142,61 @@ export class RoomBookingLayoutComponent implements OnInit, AfterViewInit {
         break;
       case 'guest':
     }
+  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onPaymentChange(e: any) {
+    const controls: Array<string | Validators[]> = [
+      ['cardholdername', [Validators.required]],
+      [
+        'cardNumber',
+        [
+          Validators.required,
+          Validators.minLength(16),
+          Validators.maxLength(16),
+        ],
+      ],
+      [
+        'expirationDate',
+        [
+          Validators.required,
+          Validators.pattern(new RegExp('^(0[1-9]|1[0-2])/?([0-9]{2})$')),
+        ],
+      ],
+      [
+        'cvv',
+        [Validators.required, Validators.minLength(3), Validators.maxLength(3)],
+      ],
+    ];
+    if (e.target.value === 'upi') {
+      for (let i = 0; i < controls.length; i++) {
+        this.paymentForm.get(controls[i][0] as string)?.clearValidators();
+        // this.paymentForm.get(controls[i])?.setValue('');
+        this.paymentForm
+          .get(controls[i][0] as string)
+          ?.updateValueAndValidity();
+      }
+      this.paymentForm
+        .get('upiNumber')
+        ?.setValidators([Validators.required, Validators.email]);
+      // this.paymentForm.get('upiNumber')?.setValue('');
+      this.paymentForm.get('upiNumber')?.updateValueAndValidity();
+    } else {
+      for (let i = 0; i < controls.length; i++) {
+        this.paymentForm
+          .get(controls[i][0] as string)
+          ?.setValidators([...(controls[i][1] as [])]);
+        // this.paymentForm.get(controls[i])?.setValue('');
+        this.paymentForm
+          .get(controls[i][0] as string)
+          ?.updateValueAndValidity();
+      }
+      this.paymentForm.get('upiNumber')?.clearValidators();
+      // this.paymentForm.get('upiNumber')?.setValue('');
+      this.paymentForm.get('upiNumber')?.updateValueAndValidity();
+    }
+  }
+  paymentProceed() {
+    this.dialog.openDialog({ ...this.bookingJson, ...this.paymentForm.value });
   }
   recieveDialogData(e: Guest) {
     this.bookingJson.guests.push({ ...e });
