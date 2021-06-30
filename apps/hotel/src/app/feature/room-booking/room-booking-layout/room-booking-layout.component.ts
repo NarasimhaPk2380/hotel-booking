@@ -37,6 +37,7 @@ export class RoomBookingLayoutComponent implements OnInit, AfterViewInit {
   tabs!: ElementRef[];
   activated = 0;
   focused = 0;
+  foodServices: string[] = ['breakfast', 'lunch', 'dinner'];
 
   constructor(private fb: FormBuilder) {}
 
@@ -47,13 +48,19 @@ export class RoomBookingLayoutComponent implements OnInit, AfterViewInit {
         checkout: new FormControl('', [Validators.required]),
         roomType: new FormControl('', [Validators.required]),
         numOfPersons: new FormControl('', [Validators.required]),
-        foodService: new FormControl([], [Validators.required]),
+        foodService: new FormGroup({}, [this.foodServiceValidator()]),
         pickup: new FormControl('', [Validators.required]),
       },
       {
         validator: this.datesCompareValidator('checkin', 'checkout'),
       }
     );
+    this.foodServices.forEach((item) => {
+      const customFormGroup: FormGroup = <FormGroup>(
+        this.roomBookingForm.controls['foodService']
+      );
+      customFormGroup.addControl(item, new FormControl(false));
+    });
     this.paymentForm = this.fb.group({
       paymentType: new FormControl('cc', [Validators.required]),
       cardholdername: new FormControl('', [Validators.required]),
@@ -86,6 +93,24 @@ export class RoomBookingLayoutComponent implements OnInit, AfterViewInit {
         return null;
       }
     };
+  }
+  // check atleast one food service is checked
+  foodServiceValidator() {
+    return () => {
+      if (!this.foodServicesSelection) {
+        return { foodServices: true };
+      } else {
+        return null;
+      }
+    };
+  }
+
+  get foodServicesSelection(): boolean {
+    const boolList =
+      Object?.values(
+        this.roomBookingForm.controls['foodService']?.value || {}
+      ) || [];
+    return boolList.indexOf(true) != -1;
   }
 
   ngAfterViewInit(): void {

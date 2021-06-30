@@ -67,18 +67,17 @@
             <div class="form-control" fxFlex="100%">
                 <fieldset>
                     <legend>Food service</legend>
-                    <div>
-                        <input id="breakfast" name="breakfast" type="checkbox" (change)="onInputChange($event)"
-                            value="breakfast" class="checkbox" [checked]="roomBookingForm.get('foodService')?.value.indexOf('breakfast') !== -1">
-                        <label for="breakfast">Breakfast</label>
-                        <input id="lunch" name="lunch" type="checkbox" value="lunch" class="checkbox" (change)="onInputChange($event)" [checked]="roomBookingForm.get('foodService')?.value.indexOf('lunch') !== -1">
-                        <label for="lunch">Lunch</label>
-                        <input id="dinner" name="dinner" type="checkbox" value="dinner" class="checkbox" (change)="onInputChange($event)" [checked]="roomBookingForm.get('foodService')?.value.indexOf('dinner') !== -1">
-                        <label for="dinner">Dinner</label>
-                    </div>
+                    <div formGroupName="foodService">
+                        <ng-container *ngFor="let foodSrvc of foodServices">
+                            <input id="{{foodSrvc}}" name="{{foodSrvc}}" type="checkbox"
+                            value="{{foodSrvc}}" class="checkbox" [formControlName]="foodSrvc">
+                        <label for="{{foodSrvc}}">{{foodSrvc | titlecase}}</label>
+                        </ng-container>
+                        </div>
                 </fieldset>
-                <ng-container *ngIf="roomBookingForm?.controls?.foodService?.touched">
-                    <span class="control-error" *ngIf="roomBookingForm?.controls?.foodService?.errors?.required">Food
+                <ng-container *ngIf="roomBookingForm?.get('foodService')?.touched">
+                    <span class="control-error" role="alert" aria-describedby="foodService"
+                    tabindex="0" *ngIf="!foodServicesSelection">Food
                         service is
                         required</span>
                 </ng-container>
