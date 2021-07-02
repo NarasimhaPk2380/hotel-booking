@@ -1,11 +1,11 @@
 <div fxLayout="row" fxLayoutAlign="center center" class="my-bookings">
     <ng-container *ngIf="bookingJson.checkin;else guests">
-        <div class="guests" fxFlex="80%">
-            <p *ngIf="bookingJson.guests.length">{{bookingJson.guests.length}} guests</p>
-            <p>{{bookingJson.guests[0]?.firstName}} {{bookingJson.guests[0]?.lastName}}</p>
-            <p><span>Room: {{bookingJson?.roomType}}</span></p>
-            <p><span>CheckIn</span><span> {{bookingJson?.checkin}}</span></p>
-            <p><span>CheckOut</span><span> {{bookingJson?.checkout}}</span></p>
+        <div class="guests" fxFlex="80%"  role="list">
+            <p tabindex="0" role="listitem">{{bookingJson.guests[0]?.firstName}} {{bookingJson.guests[0]?.lastName}}</p>
+            <p tabindex="0" role="listitem" *ngIf="bookingJson.guests.length">{{bookingJson.guests.length}} guests</p>
+            <p tabindex="0" role="listitem"><span id="roomId">Room </span>{{bookingJson?.roomType}}</p>
+            <p tabindex="0" role="listitem"><span id="checkin"  aria-labelledby="checkin" >CheckIn {{bookingJson?.checkin}}</span></p>
+            <p tabindex="0" role="listitem"><span id="checkout" aria-labelledby="checkout">CheckOut {{bookingJson?.checkout}}</span></p>
         </div>
     </ng-container>
     <ng-template #guests>

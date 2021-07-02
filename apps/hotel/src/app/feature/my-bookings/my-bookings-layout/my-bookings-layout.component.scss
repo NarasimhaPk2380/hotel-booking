@@ -17,7 +17,7 @@
       &:nth-child(2) {
         font-weight: bold;
       }
-      &:first-child {
+      &:nth-child(2) {
         float: right;
       }
       &:not(:first-child) {

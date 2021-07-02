@@ -67,7 +67,7 @@
             <div class="form-control" fxFlex="100%">
                 <fieldset>
                     <legend>Food service</legend>
-                    <div formGroupName="foodService">
+                    <div formGroupName="foodService" id="foodService">
                         <ng-container *ngFor="let foodSrvc of foodServices">
                             <input id="{{foodSrvc}}" name="{{foodSrvc}}" type="checkbox"
                             value="{{foodSrvc}}" class="checkbox" [formControlName]="foodSrvc">
